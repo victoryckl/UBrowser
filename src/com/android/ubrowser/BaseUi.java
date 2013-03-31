@@ -95,8 +95,6 @@ public abstract class BaseUi implements UI {
     private WebChromeClient.CustomViewCallback mCustomViewCallback;
     private int mOriginalOrientation;
 
-    private LinearLayout mErrorConsoleContainer = null;
-
     private UrlBarAutoShowManager mUrlBarAutoShowManager;
 
     private Toast mStopToast;
@@ -126,8 +124,6 @@ public abstract class BaseUi implements UI {
                 .inflate(R.layout.custom_screen, frameLayout);
         mContentView = (FrameLayout) frameLayout.findViewById(
                 R.id.main_content);
-        mErrorConsoleContainer = (LinearLayout) frameLayout
-                .findViewById(R.id.error_console);
         setFullscreen(BrowserSettings.getInstance().useFullscreen());
         mGenericFavicon = res.getDrawable(
                 R.drawable.app_web_browser_sm);
@@ -347,10 +343,6 @@ public abstract class BaseUi implements UI {
         mContentView.removeView(container);
         mUiController.endActionMode();
         mUiController.removeSubWindow(tab);
-        ErrorConsoleView errorConsole = tab.getErrorConsole(false);
-        if (errorConsole != null) {
-            mErrorConsoleContainer.removeView(errorConsole);
-        }
     }
 
     @Override
@@ -680,27 +672,6 @@ public abstract class BaseUi implements UI {
 
     @Override
     public void setShouldShowErrorConsole(Tab tab, boolean flag) {
-        if (tab == null) return;
-        ErrorConsoleView errorConsole = tab.getErrorConsole(true);
-        if (flag) {
-            // Setting the show state of the console will cause it's the layout
-            // to be inflated.
-            if (errorConsole.numberOfErrors() > 0) {
-                errorConsole.showConsole(ErrorConsoleView.SHOW_MINIMIZED);
-            } else {
-                errorConsole.showConsole(ErrorConsoleView.SHOW_NONE);
-            }
-            if (errorConsole.getParent() != null) {
-                mErrorConsoleContainer.removeView(errorConsole);
-            }
-            // Now we can add it to the main view.
-            mErrorConsoleContainer.addView(errorConsole,
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-        } else {
-            mErrorConsoleContainer.removeView(errorConsole);
-        }
     }
 
     // -------------------------------------------------------------------------

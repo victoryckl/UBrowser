@@ -135,8 +135,6 @@ class Tab implements PictureListener {
     // The tab ID
     private long mId = -1;
 
-    // The Geolocation permissions prompt
-    private GeolocationPermissionsPrompt mGeolocationPermissionsPrompt;
     // Main WebView wrapper
     private View mContainer;
     // Main WebView
@@ -169,10 +167,6 @@ class Tab implements PictureListener {
     private String mAppId;
     // flag to indicate if tab should be closed on back
     private boolean mCloseOnBack;
-    // Keep the original url around to avoid killing the old WebView if the url
-    // has not changed.
-    // Error console for the tab
-    private ErrorConsoleView mErrorConsole;
     // The listener that gets invoked when a download is started from the
     // mMainView
     private final DownloadListener mDownloadListener;
@@ -588,14 +582,6 @@ class Tab implements PictureListener {
             if (mTouchIconLoader != null) {
                 mTouchIconLoader.mTab = null;
                 mTouchIconLoader = null;
-            }
-
-            // reset the error console
-            if (mErrorConsole != null) {
-                mErrorConsole.clearErrorMessages();
-                if (mWebViewController.shouldShowErrorConsole()) {
-                    mErrorConsole.showConsole(ErrorConsoleView.SHOW_NONE);
-                }
             }
 
             // Cancel the auto-login process.
@@ -1152,9 +1138,6 @@ class Tab implements PictureListener {
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin,
                 GeolocationPermissions.Callback callback) {
-            if (mInForeground) {
-                getGeolocationPermissionsPrompt().show(origin, callback);
-            }
         }
 
         /**
@@ -1162,9 +1145,6 @@ class Tab implements PictureListener {
          */
         @Override
         public void onGeolocationPermissionsHidePrompt() {
-            if (mInForeground && mGeolocationPermissionsPrompt != null) {
-                mGeolocationPermissionsPrompt.hide();
-            }
         }
 
         /* Adds a JavaScript error message to the system log and if the JS
@@ -1174,17 +1154,6 @@ class Tab implements PictureListener {
          */
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-            if (mInForeground) {
-                // call getErrorConsole(true) so it will create one if needed
-                ErrorConsoleView errorConsole = getErrorConsole(true);
-                errorConsole.addErrorMessage(consoleMessage);
-                if (mWebViewController.shouldShowErrorConsole()
-                        && errorConsole.getShowState() !=
-                            ErrorConsoleView.SHOW_MAXIMIZED) {
-                    errorConsole.showConsole(ErrorConsoleView.SHOW_MINIMIZED);
-                }
-            }
-
             // Don't log console messages in private browsing mode
             if (isPrivateBrowsingEnabled()) return true;
 
@@ -1518,12 +1487,6 @@ class Tab implements PictureListener {
             return;
         }
 
-        // If the WebView is changing, the page will be reloaded, so any ongoing
-        // Geolocation permission requests are void.
-        if (mGeolocationPermissionsPrompt != null) {
-            mGeolocationPermissionsPrompt.hide();
-        }
-
         mWebViewController.onSetWebView(this, w);
 
         if (mMainView != null) {
@@ -1820,19 +1783,6 @@ class Tab implements PictureListener {
     }
 
     /**
-     * @return The geolocation permissions prompt for this tab.
-     */
-    GeolocationPermissionsPrompt getGeolocationPermissionsPrompt() {
-        if (mGeolocationPermissionsPrompt == null) {
-            ViewStub stub = (ViewStub) mContainer
-                    .findViewById(R.id.geolocation_permissions_prompt);
-            mGeolocationPermissionsPrompt = (GeolocationPermissionsPrompt) stub
-                    .inflate();
-        }
-        return mGeolocationPermissionsPrompt;
-    }
-
-    /**
      * @return The application id string
      */
     String getAppId() {
@@ -1888,22 +1838,6 @@ class Tab implements PictureListener {
 
     public boolean isBookmarkedSite() {
         return mCurrentState.mIsBookmarkedSite;
-    }
-
-    /**
-     * Return the tab's error console. Creates the console if createIfNEcessary
-     * is true and we haven't already created the console.
-     * @param createIfNecessary Flag to indicate if the console should be
-     *            created if it has not been already.
-     * @return The tab's error console, or null if one has not been created and
-     *         createIfNecessary is false.
-     */
-    ErrorConsoleView getErrorConsole(boolean createIfNecessary) {
-        if (createIfNecessary && mErrorConsole == null) {
-            mErrorConsole = new ErrorConsoleView(mContext);
-            mErrorConsole.setWebView(mMainView);
-        }
-        return mErrorConsole;
     }
 
     /**
