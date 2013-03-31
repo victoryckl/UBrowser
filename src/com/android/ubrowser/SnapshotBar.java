@@ -45,7 +45,6 @@ public class SnapshotBar extends LinearLayout implements OnClickListener {
     private TextView mDate;
     private TextView mTitle;
     private View mBookmarks;
-    private TitleBar mTitleBar;
     private View mTabSwitcher;
     private View mOverflowMenu;
     private View mToggleContainer;
@@ -65,18 +64,12 @@ public class SnapshotBar extends LinearLayout implements OnClickListener {
         super(context, attrs, defStyle);
     }
 
-    public void setTitleBar(TitleBar titleBar) {
-        mTitleBar = titleBar;
-        setFavicon(null);
-    }
-
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == MSG_SHOW_TITLE) {
                 mIsAnimating = false;
                 showTitle();
-                mTitleBar.getUi().showTitleBarForDuration();
             }
         }
     };
@@ -166,18 +159,11 @@ public class SnapshotBar extends LinearLayout implements OnClickListener {
     @Override
     public void onClick(View v) {
         if (mBookmarks == v) {
-            mTitleBar.getUiController().bookmarksOrHistoryPicker(ComboViews.Bookmarks);
         } else if (mTabSwitcher == v) {
-            ((PhoneUi) mTitleBar.getUi()).toggleNavScreen();
         } else if (mOverflowMenu == v) {
-            NavigationBarBase navBar = mTitleBar.getNavigationBar();
-            if (navBar instanceof NavigationBarPhone) {
-                ((NavigationBarPhone)navBar).showMenu(mOverflowMenu);
-            }
         } else if (mToggleContainer == v && !mIsAnimating) {
             mIsAnimating = true;
             showDate();
-            mTitleBar.getUi().showTitleBar();
             Message m = mHandler.obtainMessage(MSG_SHOW_TITLE);
             mHandler.sendMessageDelayed(m, DURATION_SHOW_DATE);
         }
@@ -199,7 +185,6 @@ public class SnapshotBar extends LinearLayout implements OnClickListener {
 
     public void setFavicon(Bitmap icon) {
         if (mFavicon == null) return;
-        mFavicon.setImageDrawable(mTitleBar.getUi().getFaviconDrawable(icon));
     }
 
     public boolean isAnimating() {

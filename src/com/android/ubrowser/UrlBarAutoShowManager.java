@@ -126,7 +126,6 @@ public class UrlBarAutoShowManager implements OnTouchListener,
                             && !mUi.isTitleBarShowing()
                             && web.getVisibleTitleHeight() == 0) {
                         mTriggeredTime = SystemClock.uptimeMillis();
-                        mUi.showTitleBar();
                     }
                 }
             }

@@ -39,7 +39,6 @@ public class AutologinBar extends LinearLayout implements OnClickListener,
     protected View mAutoLoginCancel;
     protected DeviceAccountLogin mAutoLoginHandler;
     protected ArrayAdapter<String> mAccountsAdapter;
-    protected TitleBar mTitleBar;
 
     public AutologinBar(Context context) {
         super(context);
@@ -63,10 +62,6 @@ public class AutologinBar extends LinearLayout implements OnClickListener,
         mAutoLoginError = (TextView) findViewById(R.id.autologin_error);
         mAutoLoginCancel = findViewById(R.id.autologin_close);
         mAutoLoginCancel.setOnClickListener(this);
-    }
-
-    public void setTitleBar(TitleBar titleBar) {
-        mTitleBar = titleBar;
     }
 
     @Override
@@ -127,11 +122,9 @@ public class AutologinBar extends LinearLayout implements OnClickListener,
     }
 
     void showAutoLogin(boolean animate) {
-        mTitleBar.showAutoLogin(animate);
     }
 
     void hideAutoLogin(boolean animate) {
-        mTitleBar.hideAutoLogin(animate);
     }
 
     @Override

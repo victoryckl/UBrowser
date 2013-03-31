@@ -106,8 +106,6 @@ public abstract class BaseUi implements UI {
 
     private boolean mActivityPaused;
     protected boolean mUseQuickControls;
-    protected TitleBar mTitleBar;
-    private NavigationBarBase mNavigationBar;
 
     public BaseUi(Activity browser, UiController controller) {
         mActivity = browser;
@@ -127,10 +125,6 @@ public abstract class BaseUi implements UI {
         setFullscreen(BrowserSettings.getInstance().useFullscreen());
         mGenericFavicon = res.getDrawable(
                 R.drawable.app_web_browser_sm);
-        mTitleBar = new TitleBar(mActivity, mUiController, this,
-                mContentView);
-        mTitleBar.setProgress(100);
-        mNavigationBar = mTitleBar.getNavigationBar();
         mUrlBarAutoShowManager = new UrlBarAutoShowManager(this);
     }
 
@@ -195,17 +189,11 @@ public abstract class BaseUi implements UI {
         setFavicon(tab);
         updateLockIconToLatest(tab);
         updateNavigationState(tab);
-        mTitleBar.onTabDataChanged(tab);
-        mNavigationBar.onTabDataChanged(tab);
         onProgressChanged(tab);
     }
 
     @Override
     public void bookmarkedStatusHasChanged(Tab tab) {
-        if (tab.inForeground()) {
-            boolean isBookmark = tab.isBookmarkedSite();
-            mNavigationBar.setCurrentUrlIsBookmark(isBookmark);
-        }
     }
 
     @Override
@@ -244,13 +232,7 @@ public abstract class BaseUi implements UI {
         setShouldShowErrorConsole(tab, mUiController.shouldShowErrorConsole());
         onTabDataChanged(tab);
         onProgressChanged(tab);
-        mNavigationBar.setIncognitoMode(tab.isPrivateBrowsingEnabled());
         updateAutoLogin(tab, false);
-        if (web != null && web.getVisibleTitleHeight()
-                != mTitleBar.getEmbeddedHeight()
-                && !mUseQuickControls) {
-            showTitleBarForDuration();
-        }
     }
 
     protected void updateUrlBarAutoShowManagerTarget() {
@@ -326,7 +308,6 @@ public abstract class BaseUi implements UI {
     }
 
     private void removeTabFromContentView(Tab tab) {
-        hideTitleBar();
         // Remove the container that contains the main WebView.
         WebView mainView = tab.getWebView();
         View container = tab.getViewContainer();
@@ -422,10 +403,6 @@ public abstract class BaseUi implements UI {
         if (mUiController.isInCustomActionMode()) {
             mUiController.endActionMode();
         }
-        showTitleBar();
-        if ((getActiveTab() != null) && !getActiveTab().isSnapshot()) {
-            mNavigationBar.startEditingUrl(clearInput);
-        }
     }
 
     boolean canShowTitleBar() {
@@ -436,29 +413,12 @@ public abstract class BaseUi implements UI {
                 && !mUiController.isInCustomActionMode();
     }
 
-    protected void showTitleBar() {
-        mHandler.removeMessages(MSG_HIDE_TITLEBAR);
-        if (canShowTitleBar()) {
-            mTitleBar.show();
-        }
-    }
-
-    protected void hideTitleBar() {
-        if (mTitleBar.isShowing()) {
-            mTitleBar.hide();
-        }
-    }
-
     protected boolean isTitleBarShowing() {
-        return mTitleBar.isShowing();
+    	return false;
     }
 
     public boolean isEditingUrl() {
-        return mTitleBar.isEditingUrl();
-    }
-
-    public TitleBar getTitleBar() {
-        return mTitleBar;
+    	return false;
     }
 
     protected void setTitleGravity(int gravity) {
@@ -470,20 +430,14 @@ public abstract class BaseUi implements UI {
 
     @Override
     public void showVoiceTitleBar(String title, List<String> results) {
-        mNavigationBar.setInVoiceMode(true, results);
-        mNavigationBar.setDisplayTitle(title);
     }
 
     @Override
     public void revertVoiceTitleBar(Tab tab) {
-        mNavigationBar.setInVoiceMode(false, null);
-        String url = tab.getUrl();
-        mNavigationBar.setDisplayTitle(url);
     }
 
     @Override
     public void registerDropdownChangeListener(DropdownChangeListener d) {
-        mNavigationBar.registerDropdownChangeListener(d);
     }
 
     @Override
@@ -565,7 +519,6 @@ public abstract class BaseUi implements UI {
     }
 
     protected void updateAutoLogin(Tab tab, boolean animate) {
-        mTitleBar.updateAutoLogin(tab, animate);
     }
 
     /**
@@ -586,11 +539,9 @@ public abstract class BaseUi implements UI {
             d = mLockIconSecure;
         } else if (securityState == SecurityState.SECURITY_STATE_MIXED
                 || securityState == SecurityState.SECURITY_STATE_BAD_CERTIFICATE) {
-            // TODO: It would be good to have different icons for insecure vs mixed content.
             // See http://b/5403800
             d = mLockIconMixed;
         }
-        mNavigationBar.setLock(d);
     }
 
     protected void setUrlTitle(Tab tab) {
@@ -600,17 +551,10 @@ public abstract class BaseUi implements UI {
             title = url;
         }
         if (tab.isInVoiceSearchMode()) return;
-        if (tab.inForeground()) {
-            mNavigationBar.setDisplayTitle(url);
-        }
     }
 
     // Set the favicon in the title bar.
     protected void setFavicon(Tab tab) {
-        if (tab.inForeground()) {
-            Bitmap icon = tab.getFavicon();
-            mNavigationBar.setFavicon(icon);
-        }
     }
 
     @Override
@@ -767,10 +711,6 @@ public abstract class BaseUi implements UI {
      * as if the user is editing the URL bar or if the page is loading
      */
     public void suggestHideTitleBar() {
-        if (!isLoading() && !isEditingUrl() && !mTitleBar.wantsToBeVisible()
-                && !mNavigationBar.isMenuShowing()) {
-            hideTitleBar();
-        }
     }
 
     protected final void showTitleBarForDuration() {
@@ -778,7 +718,6 @@ public abstract class BaseUi implements UI {
     }
 
     protected final void showTitleBarForDuration(long duration) {
-        showTitleBar();
         Message msg = Message.obtain(mHandler, MSG_HIDE_TITLEBAR);
         mHandler.sendMessageDelayed(msg, duration);
     }

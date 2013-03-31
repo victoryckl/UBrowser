@@ -1250,9 +1250,6 @@ public class Controller
 
     protected void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
-        if (v instanceof TitleBar) {
-            return;
-        }
         if (!(v instanceof WebView)) {
             return;
         }

@@ -34,7 +34,6 @@ public class BrowserWebView extends WebView {
     }
 
     private boolean mBackgroundRemoved = false;
-    private TitleBar mTitleBar;
     private OnScrollChangedListener mOnScrollChangedListener;
 
     /**
@@ -73,9 +72,8 @@ public class BrowserWebView extends WebView {
         super(context);
     }
 
-    @Override
     protected int getTitleHeight() {
-        return (mTitleBar != null) ? mTitleBar.getEmbeddedHeight() : 0;
+    	return 0;
     }
 
     void hideEmbeddedTitleBar() {
@@ -85,11 +83,10 @@ public class BrowserWebView extends WebView {
     @Override
     public void setEmbeddedTitleBar(final View title) {
         super.setEmbeddedTitleBar(title);
-        mTitleBar = (TitleBar) title;
     }
 
     public boolean hasTitleBar() {
-        return (mTitleBar != null);
+    	return false;
     }
 
     @Override

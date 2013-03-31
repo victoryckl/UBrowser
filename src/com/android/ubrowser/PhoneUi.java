@@ -51,9 +51,6 @@ public class PhoneUi extends BaseUi {
     private static final String LOGTAG = "PhoneUi";
     private static final int MSG_INIT_NAVSCREEN = 100;
 
-    private PieControlPhone mPieControl;
-    private AnimScreen mAnimScreen;
-    private NavigationBarPhone mNavigationBar;
     private int mActionBarHeight;
 
     boolean mExtendedMenuOpen;
@@ -68,7 +65,6 @@ public class PhoneUi extends BaseUi {
         super(browser, controller);
         Log.i(LOGTAG, "PhoneUi()");
         setUseQuickControls(BrowserSettings.getInstance().useQuickControls());
-        mNavigationBar = (NavigationBarPhone) mTitleBar.getNavigationBar();
         TypedValue heightValue = new TypedValue();
         browser.getTheme().resolveAttribute(
                 com.android.internal.R.attr.actionBarSize, heightValue, true);
@@ -78,13 +74,11 @@ public class PhoneUi extends BaseUi {
 
     @Override
     public void onDestroy() {
-        hideTitleBar();
     }
 
     @Override
     public void editUrl(boolean clearInput) {
         if (mUseQuickControls) {
-            mTitleBar.setShowProgressOnly(false);
         }
         super.editUrl(clearInput);
     }
@@ -110,21 +104,11 @@ public class PhoneUi extends BaseUi {
     public void onProgressChanged(Tab tab) {
         if (tab.inForeground()) {
             int progress = tab.getLoadProgress();
-            mTitleBar.setProgress(progress);
             if (progress == 100) {
                 if (!mOptionsMenuOpen || !mExtendedMenuOpen) {
                     suggestHideTitleBar();
                     if (mUseQuickControls) {
-                        mTitleBar.setShowProgressOnly(false);
                     }
-                }
-            } else {
-                if (!mOptionsMenuOpen || mExtendedMenuOpen) {
-                    if (mUseQuickControls && !mTitleBar.isEditingUrl()) {
-                        mTitleBar.setShowProgressOnly(true);
-                        setTitleGravity(Gravity.TOP);
-                    }
-                    showTitleBar();
                 }
             }
         }
@@ -137,8 +121,6 @@ public class PhoneUi extends BaseUi {
 
     @Override
     public void setActiveTab(final Tab tab) {
-        mTitleBar.cancelTitleBarAnimation(true);
-        mTitleBar.setSkipTitleBarAnimations(true);
         super.setActiveTab(tab);
         BrowserWebView view = (BrowserWebView) tab.getWebView();
         // TabControl.setCurrentTab has been called before this,
@@ -149,12 +131,7 @@ public class PhoneUi extends BaseUi {
         }
         // Request focus on the top window.
         if (mUseQuickControls) {
-            mPieControl.forceToTop(mContentView);
         } else {
-            // check if title bar is already attached by animation
-            if (mTitleBar.getParent() == null) {
-                view.setEmbeddedTitleBar(mTitleBar);
-            }
         }
         if (tab.isInVoiceSearchMode()) {
             showVoiceTitleBar(tab.getVoiceDisplayTitle(), tab.getVoiceSearchResults());
@@ -162,10 +139,8 @@ public class PhoneUi extends BaseUi {
             revertVoiceTitleBar(tab);
         }
         // update nav bar state
-        mNavigationBar.onStateChanged(StateListener.STATE_NORMAL);
         updateLockIconToLatest(tab);
         tab.getTopWindow().requestFocus();
-        mTitleBar.setSkipTitleBarAnimations(false);
     }
 
     // menu handling callbacks
@@ -213,13 +188,11 @@ public class PhoneUi extends BaseUi {
 
     @Override
     public void onContextMenuCreated(Menu menu) {
-        hideTitleBar();
     }
 
     @Override
     public void onContextMenuClosed(Menu menu, boolean inLoad) {
         if (inLoad) {
-            showTitleBar();
         }
     }
 
@@ -228,30 +201,17 @@ public class PhoneUi extends BaseUi {
     @Override
     public void onActionModeStarted(ActionMode mode) {
         if (!isEditingUrl()) {
-            hideTitleBar();
         } else {
-            mTitleBar.animate().translationY(mActionBarHeight);
         }
     }
 
     @Override
     public void onActionModeFinished(boolean inLoad) {
-        mTitleBar.animate().translationY(0);
-        if (inLoad) {
-            if (mUseQuickControls) {
-                mTitleBar.setShowProgressOnly(true);
-            }
-            showTitleBar();
-        }
     }
 
     @Override
     protected void setTitleGravity(int gravity) {
         if (mUseQuickControls) {
-            FrameLayout.LayoutParams lp =
-                    (FrameLayout.LayoutParams) mTitleBar.getLayoutParams();
-            lp.gravity = gravity;
-            mTitleBar.setLayoutParams(lp);
         } else {
             super.setTitleGravity(gravity);
         }
@@ -260,26 +220,12 @@ public class PhoneUi extends BaseUi {
     @Override
     public void setUseQuickControls(boolean useQuickControls) {
         mUseQuickControls = useQuickControls;
-        mTitleBar.setUseQuickControls(mUseQuickControls);
         if (useQuickControls) {
-            mPieControl = new PieControlPhone(mActivity, mUiController, this);
-            mPieControl.attachToContainer(mContentView);
             WebView web = getWebView();
             if (web != null) {
                 web.setEmbeddedTitleBar(null);
             }
         } else {
-            if (mPieControl != null) {
-                mPieControl.removeFromContainer(mContentView);
-            }
-            WebView web = getWebView();
-            if (web != null) {
-                // make sure we can re-parent titlebar
-                if ((mTitleBar != null) && (mTitleBar.getParent() != null)) {
-                    ((ViewGroup) mTitleBar.getParent()).removeView(mTitleBar);
-                }
-                web.setEmbeddedTitleBar(mTitleBar);
-            }
             setTitleGravity(Gravity.NO_GRAVITY);
         }
         updateUrlBarAutoShowManagerTarget();
@@ -320,78 +266,4 @@ public class PhoneUi extends BaseUi {
     public boolean shouldCaptureThumbnails() {
         return true;
     }
-
-    static class AnimScreen {
-
-        private View mMain;
-        private ImageView mTitle;
-        private ImageView mContent;
-        private float mScale;
-        private Bitmap mTitleBarBitmap;
-        private Bitmap mContentBitmap;
-
-        public AnimScreen(Context ctx) {
-            mMain = LayoutInflater.from(ctx).inflate(R.layout.anim_screen,
-                    null);
-            mTitle = (ImageView) mMain.findViewById(R.id.title);
-            mContent = (ImageView) mMain.findViewById(R.id.content);
-            mContent.setScaleType(ImageView.ScaleType.MATRIX);
-            mContent.setImageMatrix(new Matrix());
-            mScale = 1.0f;
-            setScaleFactor(getScaleFactor());
-        }
-
-        public void set(TitleBar tbar, WebView web) {
-            if (tbar == null || web == null) {
-                return;
-            }
-            if (tbar.getWidth() > 0 && tbar.getEmbeddedHeight() > 0) {
-                if (mTitleBarBitmap == null
-                        || mTitleBarBitmap.getWidth() != tbar.getWidth()
-                        || mTitleBarBitmap.getHeight() != tbar.getEmbeddedHeight()) {
-                    mTitleBarBitmap = Bitmap.createBitmap(tbar.getWidth(),
-                            tbar.getEmbeddedHeight(), Bitmap.Config.RGB_565);
-                }
-                Canvas c = new Canvas(mTitleBarBitmap);
-                tbar.draw(c);
-                c.setBitmap(null);
-            } else {
-                mTitleBarBitmap = null;
-            }
-            mTitle.setImageBitmap(mTitleBarBitmap);
-            mTitle.setVisibility(View.VISIBLE);
-            int h = web.getHeight() - tbar.getEmbeddedHeight();
-            if (mContentBitmap == null
-                    || mContentBitmap.getWidth() != web.getWidth()
-                    || mContentBitmap.getHeight() != h) {
-                mContentBitmap = Bitmap.createBitmap(web.getWidth(), h,
-                        Bitmap.Config.RGB_565);
-            }
-            Canvas c = new Canvas(mContentBitmap);
-            int tx = web.getScrollX();
-            int ty = web.getScrollY();
-            c.translate(-tx, -ty - tbar.getEmbeddedHeight());
-            web.draw(c);
-            c.setBitmap(null);
-            mContent.setImageBitmap(mContentBitmap);
-        }
-
-        public void set(Bitmap image) {
-            mTitle.setVisibility(View.GONE);
-            mContent.setImageBitmap(image);
-        }
-
-        private void setScaleFactor(float sf) {
-            mScale = sf;
-            Matrix m = new Matrix();
-            m.postScale(sf,sf);
-            mContent.setImageMatrix(m);
-        }
-
-        private float getScaleFactor() {
-            return mScale;
-        }
-
-    }
-
 }
