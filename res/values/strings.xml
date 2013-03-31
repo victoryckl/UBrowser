@@ -844,10 +844,10 @@
             user signs up the device with a Google sites account, the site's
             domain will be appended. -->
     <string name="homepage_base" translatable="false">
-        http://www.google.com/webhp?client={CID}&amp;source=android-home</string>
+        http://www.baidu.com</string>
     <!-- The default url for the instant_base_page. -->
     <string name="instant_base" translatable="false">
-        http://www.google.com/webhp?client={CID}&amp;source=android-instant&amp;ion=1</string>
+        http://www.baidu.com</string>
 
     <!-- Bookmarks -->
     <string-array name="bookmarks" translatable="false">
