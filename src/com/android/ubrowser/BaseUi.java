@@ -89,7 +89,6 @@ public abstract class BaseUi implements UI {
     protected Drawable mGenericFavicon;
 
     protected FrameLayout mContentView;
-    protected FrameLayout mCustomViewContainer;
     protected FrameLayout mFullscreenContainer;
 
     private View mCustomView;
@@ -127,8 +126,6 @@ public abstract class BaseUi implements UI {
                 .inflate(R.layout.custom_screen, frameLayout);
         mContentView = (FrameLayout) frameLayout.findViewById(
                 R.id.main_content);
-        mCustomViewContainer = (FrameLayout) frameLayout.findViewById(
-                R.id.fullscreen_custom_content);
         mErrorConsoleContainer = (LinearLayout) frameLayout
                 .findViewById(R.id.error_console);
         setFullscreen(BrowserSettings.getInstance().useFullscreen());

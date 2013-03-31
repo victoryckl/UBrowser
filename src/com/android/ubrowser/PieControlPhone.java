@@ -102,7 +102,7 @@ public class PieControlPhone extends PieControlBase implements OnClickListener,
         if (mUrl.getView() == v) {
             mUi.editUrl(false);
         } else if (mShowTabs.getView() == v) {
-            mUi.showNavScreen();
+//            mUi.showNavScreen();
         } else if (mOptions.getView() == v) {
             showMenu();
         }

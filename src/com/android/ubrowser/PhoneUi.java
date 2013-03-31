@@ -52,7 +52,6 @@ public class PhoneUi extends BaseUi {
     private static final int MSG_INIT_NAVSCREEN = 100;
 
     private PieControlPhone mPieControl;
-    private NavScreen mNavScreen;
     private AnimScreen mAnimScreen;
     private NavigationBarPhone mNavigationBar;
     private int mActionBarHeight;
@@ -93,14 +92,13 @@ public class PhoneUi extends BaseUi {
     @Override
     public boolean onBackKey() {
         if (showingNavScreen()) {
-            mNavScreen.close(mUiController.getTabControl().getCurrentPosition());
             return true;
         }
         return super.onBackKey();
     }
 
     private boolean showingNavScreen() {
-        return mNavScreen != null && mNavScreen.getVisibility() == View.VISIBLE;
+        return false;
     }
 
     @Override
@@ -130,26 +128,11 @@ public class PhoneUi extends BaseUi {
                 }
             }
         }
-        if (mNavScreen == null && getTitleBar().getHeight() > 0) {
-            mHandler.sendEmptyMessage(MSG_INIT_NAVSCREEN);
-        }
     }
 
     @Override
     protected void handleMessage(Message msg) {
         super.handleMessage(msg);
-        if (msg.what == MSG_INIT_NAVSCREEN) {
-            if (mNavScreen == null) {
-                mNavScreen = new NavScreen(mActivity, mUiController, this);
-                mCustomViewContainer.addView(mNavScreen, COVER_SCREEN_PARAMS);
-                mNavScreen.setVisibility(View.GONE);
-            }
-            if (mAnimScreen == null) {
-                mAnimScreen = new AnimScreen(mActivity);
-                // initialize bitmaps
-                mAnimScreen.set(getTitleBar(), getWebView());
-            }
-        }
     }
 
     @Override
@@ -224,7 +207,6 @@ public class PhoneUi extends BaseUi {
         if (showingNavScreen()
                 && (item.getItemId() != R.id.history_menu_id)
                 && (item.getItemId() != R.id.snapshots_menu_id)) {
-            hideNavScreen(mUiController.getTabControl().getCurrentPosition(), false);
         }
         return false;
     }
@@ -311,177 +293,16 @@ public class PhoneUi extends BaseUi {
     @Override
     public void showWeb(boolean animate) {
         super.showWeb(animate);
-        hideNavScreen(mUiController.getTabControl().getCurrentPosition(), animate);
-    }
-
-    void showNavScreen() {
-        mUiController.setBlockEvents(true);
-        if (mNavScreen == null) {
-            mNavScreen = new NavScreen(mActivity, mUiController, this);
-            mCustomViewContainer.addView(mNavScreen, COVER_SCREEN_PARAMS);
-        } else {
-            mNavScreen.setVisibility(View.VISIBLE);
-            mNavScreen.setAlpha(1f);
-            mNavScreen.refreshAdapter();
-        }
-        mActiveTab.capture();
-        if (mAnimScreen == null) {
-            mAnimScreen = new AnimScreen(mActivity);
-        } else {
-            mAnimScreen.mMain.setAlpha(1f);
-            mAnimScreen.mTitle.setAlpha(1f);
-            mAnimScreen.setScaleFactor(1f);
-        }
-        mAnimScreen.set(getTitleBar(), getWebView());
-        mCustomViewContainer.addView(mAnimScreen.mMain, COVER_SCREEN_PARAMS);
-        mCustomViewContainer.setVisibility(View.VISIBLE);
-        mCustomViewContainer.bringToFront();
-        mAnimScreen.mMain.layout(0, 0, mContentView.getWidth(),
-                mContentView.getHeight());
-        int fromLeft = 0;
-        int fromTop = getTitleBar().getHeight();
-        int fromRight = mContentView.getWidth();
-        int fromBottom = mContentView.getHeight();
-        int width = mActivity.getResources().getDimensionPixelSize(R.dimen.nav_tab_width);
-        int height = mActivity.getResources().getDimensionPixelSize(R.dimen.nav_tab_height);
-        int ntth = mActivity.getResources().getDimensionPixelSize(R.dimen.nav_tab_titleheight);
-        int toLeft = (mContentView.getWidth() - width) / 2;
-        int toTop = ((fromBottom - (ntth + height)) / 2 + ntth);
-        int toRight = toLeft + width;
-        int toBottom = toTop + height;
-        float scaleFactor = width / (float) mContentView.getWidth();
-        detachTab(mActiveTab);
-        mContentView.setVisibility(View.GONE);
-        AnimatorSet set1 = new AnimatorSet();
-        AnimatorSet inanim = new AnimatorSet();
-        ObjectAnimator tx = ObjectAnimator.ofInt(mAnimScreen.mContent, "left",
-                fromLeft, toLeft);
-        ObjectAnimator ty = ObjectAnimator.ofInt(mAnimScreen.mContent, "top",
-                fromTop, toTop);
-        ObjectAnimator tr = ObjectAnimator.ofInt(mAnimScreen.mContent, "right",
-                fromRight, toRight);
-        ObjectAnimator tb = ObjectAnimator.ofInt(mAnimScreen.mContent, "bottom",
-                fromBottom, toBottom);
-        ObjectAnimator title = ObjectAnimator.ofFloat(mAnimScreen.mTitle, "alpha",
-                1f, 0f);
-        ObjectAnimator sx = ObjectAnimator.ofFloat(mAnimScreen, "scaleFactor",
-                1f, scaleFactor);
-        ObjectAnimator blend1 = ObjectAnimator.ofFloat(mAnimScreen.mMain,
-                "alpha", 1f, 0f);
-        blend1.setDuration(100);
-
-        inanim.playTogether(tx, ty, tr, tb, sx, title);
-        inanim.setDuration(200);
-        set1.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator anim) {
-                mCustomViewContainer.removeView(mAnimScreen.mMain);
-                finishAnimationIn();
-                mUiController.setBlockEvents(false);
-            }
-        });
-        set1.playSequentially(inanim, blend1);
-        set1.start();
     }
 
     private void finishAnimationIn() {
         if (showingNavScreen()) {
             // notify accessibility manager about the screen change
-            mNavScreen.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-            mTabControl.setOnThumbnailUpdatedListener(mNavScreen);
         }
-    }
-
-    void hideNavScreen(int position, boolean animate) {
-        if (!showingNavScreen()) return;
-        final Tab tab = mUiController.getTabControl().getTab(position);
-        if ((tab == null) || !animate) {
-            if (tab != null) {
-                setActiveTab(tab);
-            } else if (mTabControl.getTabCount() > 0) {
-                // use a fallback tab
-                setActiveTab(mTabControl.getCurrentTab());
-            }
-            mContentView.setVisibility(View.VISIBLE);
-            finishAnimateOut();
-            return;
-        }
-        NavTabView tabview = (NavTabView) mNavScreen.getTabView(position);
-        if (tabview == null) {
-            if (mTabControl.getTabCount() > 0) {
-                // use a fallback tab
-                setActiveTab(mTabControl.getCurrentTab());
-            }
-            mContentView.setVisibility(View.VISIBLE);
-            finishAnimateOut();
-            return;
-        }
-        mUiController.setBlockEvents(true);
-        mUiController.setActiveTab(tab);
-        mContentView.setVisibility(View.VISIBLE);
-        if (mAnimScreen == null) {
-            mAnimScreen = new AnimScreen(mActivity);
-        }
-        mAnimScreen.set(tab.getScreenshot());
-        mCustomViewContainer.addView(mAnimScreen.mMain, COVER_SCREEN_PARAMS);
-        mAnimScreen.mMain.layout(0, 0, mContentView.getWidth(),
-                mContentView.getHeight());
-        mNavScreen.mScroller.finishScroller();
-        ImageView target = tabview.mImage;
-        int toLeft = 0;
-        int toTop = getTitleBar().getHeight();
-        int toRight = mContentView.getWidth();
-        int width = target.getDrawable().getIntrinsicWidth();
-        int height = target.getDrawable().getIntrinsicHeight();
-        int fromLeft = tabview.getLeft() + target.getLeft() - mNavScreen.mScroller.getScrollX();
-        int fromTop = tabview.getTop() + target.getTop() - mNavScreen.mScroller.getScrollY();
-        int fromRight = fromLeft + width;
-        int fromBottom = fromTop + height;
-        float scaleFactor = mContentView.getWidth() / (float) width;
-        int toBottom = toTop + (int) (height * scaleFactor);
-        mAnimScreen.mContent.setLeft(fromLeft);
-        mAnimScreen.mContent.setTop(fromTop);
-        mAnimScreen.mContent.setRight(fromRight);
-        mAnimScreen.mContent.setBottom(fromBottom);
-        mAnimScreen.setScaleFactor(1f);
-        AnimatorSet set1 = new AnimatorSet();
-        ObjectAnimator fade2 = ObjectAnimator.ofFloat(mAnimScreen.mMain, "alpha", 0f, 1f);
-        ObjectAnimator fade1 = ObjectAnimator.ofFloat(mNavScreen, "alpha", 1f, 0f);
-        set1.playTogether(fade1, fade2);
-        set1.setDuration(100);
-        AnimatorSet set2 = new AnimatorSet();
-        ObjectAnimator l = ObjectAnimator.ofInt(mAnimScreen.mContent, "left",
-                fromLeft, toLeft);
-        ObjectAnimator t = ObjectAnimator.ofInt(mAnimScreen.mContent, "top",
-                fromTop, toTop);
-        ObjectAnimator r = ObjectAnimator.ofInt(mAnimScreen.mContent, "right",
-                fromRight, toRight);
-        ObjectAnimator b = ObjectAnimator.ofInt(mAnimScreen.mContent, "bottom",
-                fromBottom, toBottom);
-        ObjectAnimator scale = ObjectAnimator.ofFloat(mAnimScreen, "scaleFactor",
-                1f, scaleFactor);
-        ObjectAnimator otheralpha = ObjectAnimator.ofFloat(mCustomViewContainer, "alpha", 1f, 0f);
-        otheralpha.setDuration(100);
-        set2.playTogether(l, t, r, b, scale);
-        set2.setDuration(200);
-        AnimatorSet combo = new AnimatorSet();
-        combo.playSequentially(set1, set2, otheralpha);
-        combo.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator anim) {
-                mCustomViewContainer.removeView(mAnimScreen.mMain);
-                finishAnimateOut();
-                mUiController.setBlockEvents(false);
-            }
-        });
-        combo.start();
     }
 
     private void finishAnimateOut() {
         mTabControl.setOnThumbnailUpdatedListener(null);
-        mNavScreen.setVisibility(View.GONE);
-        mCustomViewContainer.setAlpha(1f);
-        mCustomViewContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -491,9 +312,7 @@ public class PhoneUi extends BaseUi {
 
     public void toggleNavScreen() {
         if (!showingNavScreen()) {
-            showNavScreen();
         } else {
-            hideNavScreen(mUiController.getTabControl().getCurrentPosition(), false);
         }
     }
 

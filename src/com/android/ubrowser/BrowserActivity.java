@@ -63,12 +63,7 @@ public class BrowserActivity extends Activity {
             return;
         }
         mController = new Controller(this, icicle == null);
-        boolean xlarge = isTablet(this);
-        if (xlarge) {
-            mUi = new XLargeUi(this, mController);
-        } else {
-            mUi = new PhoneUi(this, mController);
-        }
+        mUi = new PhoneUi(this, mController);
         mController.setUi(mUi);
 
         Bundle state = getIntent().getBundleExtra(EXTRA_STATE);

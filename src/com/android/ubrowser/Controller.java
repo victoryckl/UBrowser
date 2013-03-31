@@ -293,13 +293,8 @@ public class Controller
             CookieManager.getInstance().removeSessionCookie();
         }
 
-        GoogleAccountLogin.startLoginIfNeeded(mActivity,
-                new Runnable() {
-                    @Override public void run() {
-                        onPreloginFinished(icicle, intent, currentTabId, restoreIncognitoTabs,
-                                fromCrash);
-                    }
-                });
+        onPreloginFinished(icicle, intent, currentTabId, restoreIncognitoTabs,
+                fromCrash);
     }
 
     private void onPreloginFinished(Bundle icicle, Intent intent, long currentTabId,
