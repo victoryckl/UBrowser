@@ -607,6 +607,7 @@ class TabControl {
      * Recreate the main WebView of the given tab.
      */
     void recreateWebView(Tab t) {
+    	Log.i(LOGTAG, "recreateWebView("+t+")");
         final WebView w = t.getWebView();
         if (w != null) {
             t.destroy();
@@ -641,6 +642,7 @@ class TabControl {
      *               set.
      */
     boolean setCurrentTab(Tab newTab) {
+    	Log.i(LOGTAG, "setCurrentTab("+newTab+")");
         return setCurrentTab(newTab, false);
     }
 

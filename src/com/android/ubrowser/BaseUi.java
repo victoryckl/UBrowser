@@ -274,73 +274,55 @@ public abstract class BaseUi implements UI {
         if ((tab == null) || (tab.getWebView() == null)) {
             return;
         }
-        View container = tab.getViewContainer();
         WebView mainView  = tab.getWebView();
-        // Attach the WebView to the container and then attach the
-        // container to the content view.
-        FrameLayout wrapper =
-                (FrameLayout) container.findViewById(R.id.webview_wrapper);
         ViewGroup parent = (ViewGroup) mainView.getParent();
-        if (parent != wrapper) {
-            if (parent != null) {
-                Log.w(LOGTAG, "mMainView already has a parent in"
-                        + " attachTabToContentView!");
-                parent.removeView(mainView);
-            }
-            wrapper.addView(mainView);
-        } else {
-            Log.w(LOGTAG, "mMainView is already attached to wrapper in"
-                    + " attachTabToContentView!");
-        }
-        parent = (ViewGroup) container.getParent();
         if (parent != mContentView) {
             if (parent != null) {
-                Log.w(LOGTAG, "mContainer already has a parent in"
-                        + " attachTabToContentView!");
-                parent.removeView(container);
+                parent.removeView(mainView);
             }
-            mContentView.addView(container, COVER_SCREEN_PARAMS);
-        } else {
-            Log.w(LOGTAG, "mContainer is already attached to content in"
-                    + " attachTabToContentView!");
+            mContentView.addView(mainView, COVER_SCREEN_PARAMS);
         }
         mUiController.attachSubWindow(tab);
     }
 
     private void removeTabFromContentView(Tab tab) {
-        // Remove the container that contains the main WebView.
-        WebView mainView = tab.getWebView();
-        View container = tab.getViewContainer();
-        if (mainView == null) {
-            return;
-        }
-        // Remove the container from the content and then remove the
-        // WebView from the container. This will trigger a focus change
-        // needed by WebView.
-        mainView.setEmbeddedTitleBar(null);
-        FrameLayout wrapper =
-                (FrameLayout) container.findViewById(R.id.webview_wrapper);
-        wrapper.removeView(mainView);
-        mContentView.removeView(container);
-        mUiController.endActionMode();
-        mUiController.removeSubWindow(tab);
+//        // Remove the container that contains the main WebView.
+//        WebView mainView = tab.getWebView();
+//        View container = tab.getViewContainer();
+//        if (mainView == null) {
+//            return;
+//        }
+//        // Remove the container from the content and then remove the
+//        // WebView from the container. This will trigger a focus change
+//        // needed by WebView.
+//        mainView.setEmbeddedTitleBar(null);
+//        FrameLayout wrapper =
+//                (FrameLayout) container.findViewById(R.id.webview_wrapper);
+//        wrapper.removeView(mainView);
+//        mContentView.removeView(container);
+//        mUiController.endActionMode();
+//        mUiController.removeSubWindow(tab);
     }
 
     @Override
     public void onSetWebView(Tab tab, WebView webView) {
-        View container = tab.getViewContainer();
-        if (container == null) {
-            // The tab consists of a container view, which contains the main
-            // WebView, as well as any other UI elements associated with the tab.
-            container = mActivity.getLayoutInflater().inflate(R.layout.tab,
-                    mContentView, false);
-            tab.setViewContainer(container);
-        }
+//        View container = tab.getViewContainer();
+//        if (container == null) {
+//            // The tab consists of a container view, which contains the main
+//            // WebView, as well as any other UI elements associated with the tab.
+//            container = mActivity.getLayoutInflater().inflate(R.layout.tab,
+//                    mContentView, false);
+//            tab.setViewContainer(container);
+//        }
+//        if (tab.getWebView() != webView) {
+//            // Just remove the old one.
+//            FrameLayout wrapper =
+//                    (FrameLayout) container.findViewById(R.id.webview_wrapper);
+//            wrapper.removeView(tab.getWebView());
+//        }
         if (tab.getWebView() != webView) {
             // Just remove the old one.
-            FrameLayout wrapper =
-                    (FrameLayout) container.findViewById(R.id.webview_wrapper);
-            wrapper.removeView(tab.getWebView());
+        	mContentView.removeView(tab.getWebView());
         }
     }
 
