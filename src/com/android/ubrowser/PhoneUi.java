@@ -129,10 +129,6 @@ public class PhoneUi extends BaseUi {
             Log.e(LOGTAG, "active tab with no webview detected");
             return;
         }
-        // Request focus on the top window.
-        if (mUseQuickControls) {
-        } else {
-        }
         if (tab.isInVoiceSearchMode()) {
             showVoiceTitleBar(tab.getVoiceDisplayTitle(), tab.getVoiceSearchResults());
         } else {
