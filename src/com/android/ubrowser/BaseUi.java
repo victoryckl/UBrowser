@@ -265,6 +265,7 @@ public abstract class BaseUi implements UI {
         removeTabFromContentView(tab);
     }
 
+    
     @Override
     public void attachTab(Tab tab) {
         attachTabToContentView(tab);
@@ -286,12 +287,12 @@ public abstract class BaseUi implements UI {
     }
 
     private void removeTabFromContentView(Tab tab) {
-//        // Remove the container that contains the main WebView.
-//        WebView mainView = tab.getWebView();
+        // Remove the container that contains the main WebView.
+        WebView mainView = tab.getWebView();
 //        View container = tab.getViewContainer();
-//        if (mainView == null) {
-//            return;
-//        }
+        if (mainView == null) {
+            return;
+        }
 //        // Remove the container from the content and then remove the
 //        // WebView from the container. This will trigger a focus change
 //        // needed by WebView.
@@ -300,8 +301,9 @@ public abstract class BaseUi implements UI {
 //                (FrameLayout) container.findViewById(R.id.webview_wrapper);
 //        wrapper.removeView(mainView);
 //        mContentView.removeView(container);
-//        mUiController.endActionMode();
-//        mUiController.removeSubWindow(tab);
+        mContentView.removeView(mainView);
+        mUiController.endActionMode();
+        mUiController.removeSubWindow(tab);
     }
 
     @Override
