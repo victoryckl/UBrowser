@@ -30,7 +30,7 @@ import com.android.external.BrowserContract;
 import com.android.external.BrowserContract.Combined;
 import com.android.external.BrowserContract.Images;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebIconDatabase;
 import android.widget.Toast;
 

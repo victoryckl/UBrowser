@@ -22,7 +22,7 @@ import com.android.ubrowser.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 
 import java.util.ArrayList;
 import java.util.List;

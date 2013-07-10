@@ -29,7 +29,7 @@ import com.android.external.BrowserContract.Bookmarks;
 import com.android.external.BrowserContract.Combined;
 import com.android.external.BrowserContract.History;
 import com.android.external.BrowserContract.Searches;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebIconDatabase;
 
 public class Browser {

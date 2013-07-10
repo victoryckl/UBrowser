@@ -18,7 +18,7 @@ package com.android.ubrowser;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebView;
 
 import java.util.Map;

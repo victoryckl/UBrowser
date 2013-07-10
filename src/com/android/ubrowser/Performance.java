@@ -20,7 +20,7 @@ import android.net.WebAddress;
 import android.os.Debug;
 import android.os.Process;
 import android.os.SystemClock;
-import android.util.Log;
+import com.android.external.Log;
 
 /**
  * Performance analysis

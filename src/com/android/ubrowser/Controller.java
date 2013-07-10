@@ -53,7 +53,7 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.Intents.Insert;
 import android.speech.RecognizerIntent;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.util.Patterns;
 import android.view.ActionMode;
 import android.view.ContextMenu;

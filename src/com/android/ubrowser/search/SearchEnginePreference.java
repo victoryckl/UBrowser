@@ -25,7 +25,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
-import android.util.Log;
+import com.android.external.Log;
 
 import java.util.ArrayList;
 

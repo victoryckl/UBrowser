@@ -27,7 +27,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;

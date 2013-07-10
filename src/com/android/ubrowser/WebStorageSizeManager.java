@@ -25,7 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.StatFs;
 import android.preference.PreferenceActivity;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebStorage;
 
 import java.io.File;

@@ -23,7 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+import com.android.external.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;

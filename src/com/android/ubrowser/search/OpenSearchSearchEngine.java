@@ -37,7 +37,7 @@ import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import com.android.external.Browser;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 
 import java.io.IOException;
 

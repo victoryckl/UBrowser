@@ -24,7 +24,7 @@ import android.database.Cursor;
 import android.os.ParcelFileDescriptor;
 import com.android.external.BrowserContract;
 import com.android.external.BrowserContract.Bookmarks;
-import android.util.Log;
+import com.android.external.Log;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

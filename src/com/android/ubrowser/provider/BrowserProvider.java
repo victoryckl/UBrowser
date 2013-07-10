@@ -44,7 +44,7 @@ import com.android.external.Browser;
 import com.android.external.Browser.BookmarkColumns;
 import android.speech.RecognizerResultsIntent;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.util.Patterns;
 
 import java.io.File;

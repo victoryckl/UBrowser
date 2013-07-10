@@ -1,6 +1,6 @@
 package com.tools;
 
-import android.util.Log;
+import com.android.external.Log;
 
 public class StackTrace {
 	private static final String TAG = "StackTrace";

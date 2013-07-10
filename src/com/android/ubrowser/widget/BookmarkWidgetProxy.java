@@ -21,7 +21,7 @@ import com.android.ubrowser.BrowserActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import com.android.external.Log;
 
 public class BookmarkWidgetProxy extends BroadcastReceiver {
 

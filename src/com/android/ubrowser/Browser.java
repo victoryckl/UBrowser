@@ -17,7 +17,7 @@
 package com.android.ubrowser;
 
 import android.app.Application;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.CookieSyncManager;
 
 public class Browser extends Application { 

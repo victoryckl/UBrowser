@@ -22,7 +22,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Message;
-import android.util.Log;
+import com.android.external.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.HttpAuthHandler;

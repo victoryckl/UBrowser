@@ -32,7 +32,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;

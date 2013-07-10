@@ -22,7 +22,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import com.android.external.Browser;
-import android.util.Log;
+import com.android.external.Log;
 
 import java.util.HashMap;
 import java.util.Iterator;

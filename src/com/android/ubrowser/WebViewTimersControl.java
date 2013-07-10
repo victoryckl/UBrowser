@@ -16,7 +16,7 @@
 package com.android.ubrowser;
 
 import android.os.Looper;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebView;
 
 /**

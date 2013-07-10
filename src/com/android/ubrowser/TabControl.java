@@ -17,7 +17,7 @@
 package com.android.ubrowser;
 
 import android.os.Bundle;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebView;
 
 import java.util.ArrayList;

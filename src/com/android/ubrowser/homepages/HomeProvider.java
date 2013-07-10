@@ -25,7 +25,7 @@ import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebResourceResponse;
 
 import java.io.IOException;

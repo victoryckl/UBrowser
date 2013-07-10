@@ -17,7 +17,7 @@ package com.android.ubrowser;
 
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.SearchBox;
 
 import java.util.Map;

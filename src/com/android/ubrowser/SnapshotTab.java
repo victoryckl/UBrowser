@@ -23,7 +23,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebView;
 
 import com.android.ubrowser.provider.SnapshotProvider.Snapshots;

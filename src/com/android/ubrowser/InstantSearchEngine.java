@@ -28,7 +28,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.util.LruCache;
 import android.webkit.SearchBox;
 import android.webkit.WebView;

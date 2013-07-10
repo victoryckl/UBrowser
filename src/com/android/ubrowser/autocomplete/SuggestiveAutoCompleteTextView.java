@@ -31,7 +31,7 @@ import android.text.Html;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
+import com.android.external.Log;
 import android.view.AbsSavedState;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;

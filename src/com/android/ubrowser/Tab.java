@@ -46,7 +46,7 @@ import android.security.KeyChain;
 import android.security.KeyChainAliasCallback;
 import android.speech.RecognizerResultsIntent;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;

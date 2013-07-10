@@ -23,7 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
-import android.util.Log;
+import com.android.external.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

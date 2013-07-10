@@ -29,7 +29,7 @@ import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;

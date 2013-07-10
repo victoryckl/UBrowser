@@ -27,7 +27,7 @@ import android.os.Handler;
 import android.os.Message;
 import com.android.external.BrowserContract;
 import com.android.external.BrowserContract.History;
-import android.util.Log;
+import com.android.external.Log;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

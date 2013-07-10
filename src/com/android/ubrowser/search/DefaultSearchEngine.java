@@ -28,7 +28,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import com.android.external.Browser;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 
 public class DefaultSearchEngine implements SearchEngine {
 

@@ -32,7 +32,7 @@ import android.os.Binder;
 import com.android.external.BrowserContract;
 import com.android.external.BrowserContract.Bookmarks;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 

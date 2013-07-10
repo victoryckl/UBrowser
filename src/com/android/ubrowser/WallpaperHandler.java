@@ -24,7 +24,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import com.android.external.Log;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import java.io.BufferedInputStream;

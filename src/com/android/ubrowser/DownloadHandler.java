@@ -30,7 +30,7 @@ import android.net.Uri;
 import android.net.WebAddress;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.CookieManager;
 import android.webkit.URLUtil;
 import android.widget.Toast;

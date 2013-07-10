@@ -26,7 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Message;
-import android.util.Log;
+import com.android.external.Log;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.Gravity;

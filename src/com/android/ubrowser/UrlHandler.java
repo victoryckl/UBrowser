@@ -26,7 +26,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import com.android.external.Browser;
-import android.util.Log;
+import com.android.external.Log;
 import android.webkit.WebView;
 
 import java.net.URISyntaxException;
